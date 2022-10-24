@@ -22,6 +22,7 @@ export default {
     return {
       articles: [
         {
+          id: 'mi-primer-post',
           title: 'Mi primer post',
           description: 'Post realizado para el miniblog',
           author: 'Ameth Ordoñez',
