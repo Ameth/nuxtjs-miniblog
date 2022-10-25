@@ -80,14 +80,6 @@ export default {
         content: this.article?.content
       }
     }
-    // comment () {
-    //   return {
-    //     author: this.comments?.author,
-    //     'author-email': this.comments['author-email'],
-    //     content: this.comments?.content,
-    //     created: new Date(this.comments?.created).toLocaleDateString()
-    //   }
-    // }
   },
   data () {
     return {
@@ -98,6 +90,8 @@ export default {
   },
   methods: {
     async enviarComentario (data) {
+      this.$nuxt.$loading.start()
+      // console.log(this.$nuxt.$loading)
       // console.log(data)
       const url =
         location.hostname === 'localhost'
@@ -107,6 +101,8 @@ export default {
         `${url}/.netlify/functions/comment?article=${this.article._id}`,
         { method: 'post', body: JSON.stringify(data) }
       )
+      this.$nuxt.refresh()
+      this.$nuxt.$loading.finish()
     }
   }
 }
