@@ -12,6 +12,22 @@
         <figcaption>Portada - {{ post.title }}</figcaption>
       </figure>
       <VueMarkdown class="markdown">{{ post.content }}</VueMarkdown>
+      <div ref="comments" class="comments">
+        <h3 class="title">Comentarios</h3>
+        <p class="total-comments">
+          Hay {{ article['total-comments'] || 0 }} comentarios
+        </p>
+        <div class="comments-list">
+          <CommentItem
+            v-for="comment in comments"
+            :key="comment._id"
+            v-bind="comment"
+          />
+        </div>
+        <div class="add-comment">
+          <InputComment @submit="enviarComentario" />
+        </div>
+      </div>
     </article>
   </div>
 </template>
@@ -34,17 +50,63 @@ export default {
       ]
     }
   },
+  middleware (context) {
+    // const { redirect } = context
+    // console.log(context)
+    // redirect('/')
+  },
+  async asyncData (context) {
+    // console.log(context)
+    const url =
+      context.isDev === true
+        ? 'http://localhost:9999'
+        : 'https://miniblog-nuxt-ameth.netlify.app'
+    const { $http, params } = context
+    const data = await $http.$get(
+      `${url}/.netlify/functions/article?slug=${params.id}`
+    )
+    const { article, comments } = data
+    return { article, comments }
+    // console.log(data)
+  },
+  computed: {
+    post () {
+      return {
+        title: this.article?.title,
+        author: this.article['author-name'][0],
+        updated: new Date(this.article?.updated).toLocaleDateString(),
+        description: this.article?.description,
+        cover: 'https://picsum.photos/1024/420',
+        content: this.article?.content
+      }
+    }
+    // comment () {
+    //   return {
+    //     author: this.comments?.author,
+    //     'author-email': this.comments['author-email'],
+    //     content: this.comments?.content,
+    //     created: new Date(this.comments?.created).toLocaleDateString()
+    //   }
+    // }
+  },
   data () {
     return {
-      post: {
-        id: 'mi-primer-post',
-        title: 'Mi primer post',
-        author: 'Ameth Ordoñez',
-        updated: '22/10/2022',
-        description: 'Lorem ispum dolor',
-        cover: 'https://via.placeholder.com/1024x420',
-        content: '# Title\n\n## Segundo title\n\nPrueba'
-      }
+      comentContent: '',
+      comentAuthor: '',
+      comentEmail: ''
+    }
+  },
+  methods: {
+    async enviarComentario (data) {
+      // console.log(data)
+      const url =
+        location.hostname === 'localhost'
+          ? 'http://localhost:9999'
+          : 'https://miniblog-nuxt-ameth.netlify.app'
+      await fetch(
+        `${url}/.netlify/functions/comment?article=${this.article._id}`,
+        { method: 'post', body: JSON.stringify(data) }
+      )
     }
   }
 }

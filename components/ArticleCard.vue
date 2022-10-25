@@ -1,6 +1,6 @@
 <template>
   <div class="article-card">
-    <NuxtLink :to="`/${id}`">
+    <NuxtLink :to="`/${slug}`">
       <h3>{{ title }}</h3>
     </NuxtLink>
     <div class="author">
@@ -12,7 +12,7 @@
     </figure>
     <p>{{ description }}</p>
     <div class="actions">
-      <NuxtLink class="btn" :to="`/${id}`">Ir al post</NuxtLink>
+      <NuxtLink class="btn" :to="`/${slug}`">Ir al post</NuxtLink>
     </div>
   </div>
 </template>
@@ -21,7 +21,7 @@
 export default {
   name: 'ArticleCard',
   props: {
-    id: {
+    slug: {
       type: String,
       default: ''
     },

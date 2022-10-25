@@ -12,6 +12,7 @@
     "lintfix": "npm run lint:style -- --fix"
   },
   "dependencies": {
+    "@nuxt/http": "^0.6.4",
     "airtable": "^0.11.5",
     "babel-runtime": "^6.26.0",
     "core-js": "^3.25.3",
